@@ -20,12 +20,12 @@ class Persona{
 
     method cuotas() = self.tarjetasCredito().flatMap{x => x.cuotas()}
 
-    method cuotasAPagar() = self.cuotas().filter{x => x.mes() <= mes.mes()}
-    
-    
+    method cuotasAPagar() = self.cuotas().filter{x => x.mes() <= mes.mes()}    
 
     method cobrarSueldo(){
         var sueldo = trabajo.sueldo()
+
+        // Algo de pagar las cuotas
 
         self.efectivo().ganar(sueldo)
         
@@ -43,15 +43,15 @@ class Persona{
 class CompradorCompulsivo inherits Persona{
     override method comprar(objeto){
        super(objeto)
-        const pago = formasDePago.find{x=>x.puedeComprar(objeto.costo())}
-        if(pago!=null)
-            pago.comprar(objeto)
+        if(!objetos.contains(objeto)){ // Verificamos que no lo haya comrpado regularmente
+            const pago = formasDePago.find{x=>x.puedeComprar(objeto.costo())} // wollok tira error en caso de no encontrarlo, no hacer nada sería mas indicado
+            pago.comprar(objeto)}
     }
 }
 
 class PagadorCompulsivo inherits Persona{
     override method cobrarSueldo(){
         super()
-        //self.pagarCuotas(formasDePago.find{x => x.medio() == "efectivo"})
+        //self.pagarCuotas(self.efectivo())
     }
 }
