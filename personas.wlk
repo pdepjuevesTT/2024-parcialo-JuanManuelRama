@@ -1,14 +1,17 @@
 import abstractos.*
+import financieros.Efectivo
 class Persona{
-    const property formasDePago = #{}
+    method formasDePago() = [efectivo] + credito + debito
+    const property efectivo = new Efectivo(dinero = 0)
+    const property debito = []
+    const property credito = []
     var pagoPreferido
     const objetos = []
-    var trabajo
+    var property trabajo
     
     method pagoPreferido () = pagoPreferido
     method cantidadCosas() = objetos.size()
 
-    method efectivo() = formasDePago.find{x => x.medio() == "efectivo"}
 
     method comprar(objeto){
         if(pagoPreferido.puedeGastar(objeto.precio())){
@@ -16,26 +19,29 @@ class Persona{
             pagoPreferido.gastar(objeto.precio())
         }
     }
-    method tarjetasCredito() = formasDePago.filter{x => x.medio() == "credito"}
 
-    method cuotas() = self.tarjetasCredito().flatMap{x => x.cuotas()}
+    method cuotas() = credito.flatMap{x => x.cuotas()}
 
     method cuotasAPagar() = self.cuotas().filter{x => x.mes() <= mes.mes()}    
 
-    method cobrarSueldo(){
-        var sueldo = trabajo.sueldo()
-
-        // Algo de pagar las cuotas
-
-        self.efectivo().ganar(sueldo)
+    method pagarCuotas(medio){
+        if(credito.any{tarjeta => tarjeta.puedePagarCuotas(medio.disponible())}){
+            const tarjeta = credito.find{tarjeta => tarjeta.puedePagarCuotas(medio.disponible())}
+            medio.gastar(tarjeta.valorCuotaAPagar(medio.disponible()))
+            tarjeta.pagarCuota(medio.disponible())
+            self.pagarCuotas(medio)
+            }       
         
     }
 
-    method cambiarPagoPreferido(otro){
-        if(formasDePago.contains(otro))
-            pagoPreferido = otro
-        else
-            throw new Exception(message ="Método de pago disponible")
+    method cobrarSueldo(){
+        const sueldo = new Efectivo(dinero = trabajo.cobrar())
+        self.pagarCuotas(sueldo)
+        efectivo.ganar(sueldo.disponible())
+    }
+
+    method cambiarPagoPreferido(){
+        pagoPreferido = self.formasDePago().filter{x => x!= pagoPreferido}.anyOne()
     }
 }
 
@@ -44,7 +50,7 @@ class CompradorCompulsivo inherits Persona{
     override method comprar(objeto){
        super(objeto)
         if(!objetos.contains(objeto)){ // Verificamos que no lo haya comrpado regularmente
-            const pago = formasDePago.find{x=>x.puedeGastar(objeto.costo())} // wollok tira error en caso de no encontrarlo, no hacer nada sería mas indicado
+            const pago = self.formasDePago().find{x=>x.puedeGastar(objeto.costo())} // wollok tira error en caso de no encontrarlo, no hacer nada sería mas indicado
             pago.comprar(objeto)}
     }
 }
@@ -52,6 +58,6 @@ class CompradorCompulsivo inherits Persona{
 class PagadorCompulsivo inherits Persona{
     override method cobrarSueldo(){
         super()
-        //self.pagarCuotas(self.efectivo())
+        self.pagarCuotas(self.efectivo())
     }
 }
