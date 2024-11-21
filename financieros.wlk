@@ -1,8 +1,9 @@
 import abstractos.mes
 class MedioDePago{
     var dinero
+    method disponible() = dinero
     method gastar(cantidad){dinero-=cantidad}
-    method puedeComprar(cantidad) = dinero>=cantidad
+    method puedeGastar(cantidad) = dinero>=cantidad
     method ganar(cantidad){dinero += cantidad}
 }
 
@@ -11,7 +12,7 @@ class Efectivo inherits MedioDePago{
 }
 
 class Debito inherits MedioDePago{
-    method medio() = "debtio"
+    method medio() = "debtio" 
 }
 
 class Credito{
@@ -20,7 +21,7 @@ class Credito{
     const property cuotas = []
 
     method gastar(cantidad){self.aniadirCuotas(self.cuotaIndividual(cantidad))}
-    method puedeComprar(cantidad) = bancoEmisor.tope() >= cuotas.sum() + cantidad 
+    method puedeGastar(cantidad) = bancoEmisor.tope() >= cantidad
 
     method puedePagarCuota(dinero, cuota) = cuota/bancoEmisor.cuotas() <= dinero
 

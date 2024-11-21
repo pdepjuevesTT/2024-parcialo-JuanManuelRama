@@ -6,7 +6,7 @@ object mes{
 
 
 object universo{
-    const personas = []
+    const property personas = []
     method transcurreMes(){
         mes.pasarMes()
         personas.forEach{persona => persona.cobrarSueldo()}

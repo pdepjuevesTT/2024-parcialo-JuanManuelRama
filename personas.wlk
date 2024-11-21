@@ -1,17 +1,17 @@
 import abstractos.*
 class Persona{
-    const formasDePago = #{}
+    const property formasDePago = #{}
     var pagoPreferido
     const objetos = []
     var trabajo
     
     method pagoPreferido () = pagoPreferido
-    method cantidadCosas() = objetos.length()
+    method cantidadCosas() = objetos.size()
 
     method efectivo() = formasDePago.find{x => x.medio() == "efectivo"}
 
     method comprar(objeto){
-        if(pagoPreferido.puedeComprar(objeto.precio())){
+        if(pagoPreferido.puedeGastar(objeto.precio())){
             objetos.add(objeto)
             pagoPreferido.gastar(objeto.precio())
         }
@@ -44,7 +44,7 @@ class CompradorCompulsivo inherits Persona{
     override method comprar(objeto){
        super(objeto)
         if(!objetos.contains(objeto)){ // Verificamos que no lo haya comrpado regularmente
-            const pago = formasDePago.find{x=>x.puedeComprar(objeto.costo())} // wollok tira error en caso de no encontrarlo, no hacer nada sería mas indicado
+            const pago = formasDePago.find{x=>x.puedeGastar(objeto.costo())} // wollok tira error en caso de no encontrarlo, no hacer nada sería mas indicado
             pago.comprar(objeto)}
     }
 }
