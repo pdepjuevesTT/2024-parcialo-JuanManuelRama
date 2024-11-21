@@ -1,13 +1,19 @@
-import solucion.*
+import personas.*
+import financieros.*
+import abstractos.*
 describe "Tests"{
     test "Compra en cuotas"{
+        const tarjeta = new Credito(bancoEmisor = new Banco(cuotas = 5, tope = 1000))
         const pepita = new Persona(
-            pagoPreferido = new Credito(bancoEmisor = new Banco(cuotas = 5, tope = 1000)),
-            trabajo = new Empleo(salario = 10)
+            pagoPreferido = tarjeta,
+            trabajo = new Empleo(salario = 10),
+            formasDePago = [tarjeta]
         )
+        
         const heladera = new Articulo(precio = 10, nombre = "heladera")
         pepita.comprar(heladera)
-
-        assert.equals(pepita.pagoPreferido().cuotas().get(1).valor(), 3)
+        mes.pasarMes()
+        mes.pasarMes() //Paso meses sin que pepita cobre, para que acumule deudas
+        assert.equals(pepita.cuotasAPagar().sum{x => x.valor()}, 6)
     }
 }
