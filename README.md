@@ -1,6 +1,4 @@
+# Parcial Objetos
 
-
-## Example
-
-TODO
+Juan Manuel Rama
 
