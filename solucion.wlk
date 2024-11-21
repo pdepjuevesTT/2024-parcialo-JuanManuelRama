@@ -24,7 +24,7 @@ class Credito{
     method puedePagarCuota(dinero, cuota) = cuota/bancoEmisor.cuotas() <= dinero
 
 
-    method montoTotal(pago) = pago*bancoCentral.interes() / 100
+    method montoTotal(pago) = pago+ pago*bancoCentral.interes() / 100
     method cuotaIndividual(cantidad) = self.montoTotal(cantidad)/bancoEmisor.cuotas()
 
 
@@ -53,7 +53,8 @@ class Persona{
     var pagoPreferido
     const objetos = []
     var trabajo
-
+    
+    method pagoPreferido () = pagoPreferido
     method cantidadCosas() = objetos.length()
 
     method efectivo() = formasDePago.find{x => x.medio() == "efectivo"}
@@ -123,4 +124,9 @@ class Empleo{
     var salario
     method cobrar() = salario
     method aumento(monto) {salario+=monto}
+}
+
+class Articulo{
+    const nombre
+    const property precio
 }

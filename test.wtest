@@ -1,0 +1,13 @@
+import solucion.*
+describe "Tests"{
+    test "Compra en cuotas"{
+        const pepita = new Persona(
+            pagoPreferido = new Credito(bancoEmisor = new Banco(cuotas = 5, tope = 1000)),
+            trabajo = new Empleo(salario = 10)
+        )
+        const heladera = new Articulo(precio = 10, nombre = "heladera")
+        pepita.comprar(heladera)
+
+        assert.equals(pepita.pagoPreferido().cuotas().get(1).valor(), 3)
+    }
+}
