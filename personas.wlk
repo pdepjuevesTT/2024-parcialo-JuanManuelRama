@@ -1,8 +1,8 @@
 import abstractos.*
-import financieros.Efectivo
+import financieros.MedioDePagoInstantaneo
 class Persona{
     method formasDePago() = [efectivo] + credito + debito
-    const property efectivo = new Efectivo(dinero = 0)
+    const property efectivo = new MedioDePagoInstantaneo(dinero = 0)
     const property debito = []
     const property credito = []
     var pagoPreferido
@@ -20,8 +20,6 @@ class Persona{
         }
     }
 
-    method cuotas() = credito.flatMap{x => x.cuotas()}
-
     method deuda() = credito.sum{tarjeta => tarjeta.deudas()}
 
     method pagarCuotas(medio){
@@ -31,11 +29,10 @@ class Persona{
             tarjeta.pagarCuota(medio.disponible())
             self.pagarCuotas(medio)
             }       
-        
     }
 
     method cobrarSueldo(){
-        const sueldo = new Efectivo(dinero = trabajo.cobrar())
+        const sueldo = new MedioDePagoInstantaneo(dinero = trabajo.cobrar())
         self.pagarCuotas(sueldo)
         efectivo.ganar(sueldo.disponible())
     }

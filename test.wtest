@@ -14,7 +14,6 @@ describe "Tests"{
         return pepita}
     test "Compra en cuotas"{
         const pepita = self.pepita()
-
         mes.pasarMes()
         mes.pasarMes() //Paso meses sin que pepita cobre, para que acumule deudas
         assert.equals(pepita.deuda(), 6)
@@ -40,11 +39,16 @@ describe "Tests"{
         universo.transcurreMes()
         assert.equals(pepita.deuda(), 3)
     }
+    test "Pepita ES la deuda global"{
+        const pepita = self.pepita()
+        universo.personas().add(pepita)
+        assert.equals(universo.deudaGlobal(), pepita.deuda())
+    }
 
     test "Pepita liquida ahorros para pagar la deuda"{
         const tarjeta = new Credito(bancoEmisor = new Banco(cuotas = 5, tope = 100))
         const pepita = new PagadorCompulsivo(pagoPreferido = tarjeta,
-            efectivo = new Efectivo(dinero = 10),
+            efectivo = new MedioDePagoInstantaneo(dinero = 10),
             trabajo = new Empleo(salario = 2),
             credito = [tarjeta]
         )
@@ -53,11 +57,5 @@ describe "Tests"{
         universo.personas().add(pepita)
         universo.transcurreMes()
         assert.equals(pepita.efectivo().disponible(), 9)
-    }
-
-    test "Pepita ES la deuda global"{
-        const pepita = self.pepita()
-        universo.personas().add(pepita)
-        assert.equals(universo.deudaGlobal(), pepita.deuda())
     }
 }

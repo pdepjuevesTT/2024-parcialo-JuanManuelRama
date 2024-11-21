@@ -1,25 +1,25 @@
 import abstractos.mes
 class MedioDePago{
+    method disponible()
+    method gastar(cantidad)
+    method puedeGastar(cantidad) = self.disponible()>=cantidad
+    method ganar(cantidad)
+}
+
+class MedioDePagoInstantaneo inherits MedioDePago{
     var dinero
-    method disponible() = dinero
-    method gastar(cantidad){dinero-=cantidad}
-    method puedeGastar(cantidad) = dinero>=cantidad
-    method ganar(cantidad){dinero += cantidad}
+    override method disponible() = dinero
+    override method gastar(cantidad) {dinero-=cantidad}
+    override method ganar(cantidad) {dinero+=cantidad}
 }
 
-class Efectivo inherits MedioDePago{
-}
-
-class Debito inherits MedioDePago{
-}
-
-class Credito{
+class Credito inherits MedioDePago{
     const bancoEmisor
     const property cuotas = []
-    method disponible() = bancoEmisor.tope()
+    override method disponible() = bancoEmisor.tope()
+    override method ganar(cantidad) {}
 
-    method gastar(cantidad){self.aniadirCuotas(self.cuotaIndividual(cantidad))}
-    method puedeGastar(cantidad) = bancoEmisor.tope() >= cantidad
+    override method gastar(cantidad){self.aniadirCuotas(self.cuotaIndividual(cantidad))}
 
     method deudas() = self.cuotas().filter{x => x.mes() <= mes.mes()}.sum{cuota => cuota.valor()}
 
@@ -27,9 +27,9 @@ class Credito{
     method cuotaIndividual(cantidad) = self.montoTotal(cantidad)/bancoEmisor.cuotas()
 
 
-    method aniadirCuotas(cuota) {
-        (mes.mes()+1 .. 1+mes.mes()+bancoEmisor.cuotas()).forEach{fecha => self.aniadirCuota(fecha, cuota) }
-    }
+    method rangoCuotas() = mes.mes()+1..mes.mes()+bancoEmisor.cuotas()+1
+
+    method aniadirCuotas(cuota) {self.rangoCuotas().forEach{fecha => self.aniadirCuota(fecha, cuota)}}
 
     method aniadirCuota(fecha, valor) {cuotas.add(new Cuota(mes = fecha, valor = valor))}
 
@@ -47,9 +47,7 @@ class Credito{
 
 class CreditoRealista inherits Credito{
     method calcularInteres(fecha, valor) = (1+bancoCentral.interes()/100)*(fecha-mes.mes()) // No se como se calcula el crédito en la vida real
-    override method aniadirCuota(fecha, valor) {
-        {cuotas.add(new Cuota(mes = fecha, valor = self.calcularInteres(fecha, valor)))}
-    }
+    override method aniadirCuota(fecha, valor) {{cuotas.add(new Cuota(mes = fecha, valor = self.calcularInteres(fecha, valor)))}}
 }
 
 class Cuota{
