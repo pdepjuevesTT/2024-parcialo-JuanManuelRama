@@ -21,7 +21,7 @@ class Credito{
     method gastar(cantidad){self.aniadirCuotas(self.cuotaIndividual(cantidad))}
     method puedeGastar(cantidad) = bancoEmisor.tope() >= cantidad
 
-
+    method deudas() = self.cuotas().filter{x => x.mes() <= mes.mes()}.sum{cuota => cuota.valor()}
 
     method montoTotal(pago) = pago+ pago*bancoCentral.interes() / 100
     method cuotaIndividual(cantidad) = self.montoTotal(cantidad)/bancoEmisor.cuotas()
@@ -65,8 +65,3 @@ class Banco{
 object bancoCentral{
     var property interes = 50
 }
-
-
-
-
-

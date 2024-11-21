@@ -22,7 +22,7 @@ class Persona{
 
     method cuotas() = credito.flatMap{x => x.cuotas()}
 
-    method cuotasAPagar() = self.cuotas().filter{x => x.mes() <= mes.mes()}    
+    method deuda() = credito.sum{tarjeta => tarjeta.deudas()}
 
     method pagarCuotas(medio){
         if(credito.any{tarjeta => tarjeta.puedePagarCuotas(medio.disponible())}){

@@ -13,6 +13,7 @@ object universo{
     }
 
     method personaConMasCosas() = personas.max{persona => persona.cantidadCosas()}
+    method deudaGlobal() = personas.sum{persona => persona.deuda()}
 }
 
 class Empleo{
