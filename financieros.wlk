@@ -27,21 +27,20 @@ class Credito inherits MedioDePago{
     method cuotaIndividual(cantidad) = self.montoTotal(cantidad)/bancoEmisor.cuotas()
 
 
+
     method rangoCuotas() = mes.mes()+1..mes.mes()+bancoEmisor.cuotas()+1
 
     method aniadirCuotas(cuota) {self.rangoCuotas().forEach{fecha => self.aniadirCuota(fecha, cuota)}}
-
     method aniadirCuota(fecha, valor) {cuotas.add(new Cuota(mes = fecha, valor = valor))}
 
+    method puedePagarCuotas(dinero) = cuotas.any{cuota =>self.puedePagarCuota(cuota, dinero)}
     method puedePagarCuota(cuota, dinero) = cuota.valor() <=dinero && cuota.mes() <=mes.mes()
 
     method cuotaAPagar(dinero) = cuotas.find{cuota => self.puedePagarCuota(cuota, dinero)}
-
     method valorCuotaAPagar(dinero) = self.cuotaAPagar(dinero).valor()
-
     method pagarCuota(dinero) {cuotas.remove(self.cuotaAPagar(dinero))}
 
-    method puedePagarCuotas(dinero) = cuotas.any{cuota =>self.puedePagarCuota(cuota, dinero)}
+
 
 }
 
